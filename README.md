@@ -83,3 +83,25 @@ Here are some of the most commonly used MPI functions along with explanations fo
      - `source`: Rank of the source process.
      - `tag`: Message tag (user-defined).
      - `status`: Status object to receive status information.
+
+7. **MPI_Isend**
+   - Function: Initiates a non-blocking send operation.
+   - Parameters:
+     - `buf`: Pointer to the send buffer.
+     - `count`: Number of elements in the send buffer.
+     - `datatype`: Data type of elements in the send buffer.
+     - `dest`: Rank of the destination process.
+     - `tag`: Message tag (user-defined).
+     - `comm`: Communicator (group of processes).
+     - `request`: Pointer to a request object that will be created and used to manage the communication.
+
+8. **MPI_Irecv**
+   - Function: Initiates a non-blocking receive operation.
+   - Parameters:
+     - `buf`: Pointer to the receive buffer.
+     - `count`: Number of elements in the receive buffer.
+     - `datatype`: Data type of elements in the receive buffer.
+     - `source`: Rank of the source process.
+     - `tag`: Message tag (user-defined).
+     - `comm`: Communicator (group of processes).
+     - `request`: Pointer to a request object that will be created and used to manage the communication.
