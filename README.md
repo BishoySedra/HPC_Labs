@@ -38,3 +38,48 @@ Follow these steps to set up the environment for working with MPI in your projec
      mpiexec "Project_Name"
      ```
    Replace "Project_Name" with the name of your executable file.
+
+## Most Commonly Used MPI Functions
+
+Here are some of the most commonly used MPI functions along with explanations for their parameters:
+
+1. **MPI_Init**
+   - Function: Initializes the MPI execution environment.
+   - Parameters: 
+     - `argc`: Pointer to the number of arguments.
+     - `argv`: Pointer to the argument vector.
+
+2. **MPI_Finalize**
+   - Function: Terminates MPI execution environment.
+   - Parameters: None.
+
+3. **MPI_Comm_size**
+   - Function: Determines the size of a communicator.
+   - Parameters:
+     - `comm`: Communicator (group of processes).
+     - `size`: Pointer to an integer where the size of the communicator will be stored.
+
+4. **MPI_Comm_rank**
+   - Function: Determines the rank of the calling process in the communicator.
+   - Parameters:
+     - `comm`: Communicator (group of processes).
+     - `rank`: Pointer to an integer where the rank of the calling process will be stored.
+
+5. **MPI_Send**
+   - Function: Sends a message from one process to another.
+   - Parameters:
+     - `buf`: Pointer to the send buffer.
+     - `count`: Number of elements in the send buffer.
+     - `datatype`: Data type of elements in the send buffer.
+     - `dest`: Rank of the destination process.
+     - `tag`: Message tag (user-defined).
+
+6. **MPI_Recv**
+   - Function: Receives a message from another process.
+   - Parameters:
+     - `buf`: Pointer to the receive buffer.
+     - `count`: Number of elements in the receive buffer.
+     - `datatype`: Data type of elements in the receive buffer.
+     - `source`: Rank of the source process.
+     - `tag`: Message tag (user-defined).
+     - `status`: Status object to receive status information.
