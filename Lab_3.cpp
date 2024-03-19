@@ -1,4 +1,4 @@
-// Purpose: MPI program to demonstrate ping-pong communication
+// Purpose: MPI program to demonstrate point-to-point communication
 
 #include <iostream>
 #include <mpi.h>
