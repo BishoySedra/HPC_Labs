@@ -7,6 +7,7 @@ using namespace std;
 
 int main()
 {
+    
     // initialize MPI
     MPI_Init(NULL, NULL);
 
