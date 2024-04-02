@@ -15,6 +15,7 @@ using namespace std;
 
 int main()
 {
+
     MPI_Init(NULL, NULL);
 
     int rank, size;
