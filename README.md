@@ -134,6 +134,7 @@ Here are some of the most commonly used MPI functions along with explanations fo
      - `comm`: Communicator (group of processes).
 
 10. **MPI_Gather**
+
     - Function: Gathers data from all processes to the root process in a communicator.
     - Parameters:
       - `sendbuf`: Pointer to the send buffer (all processes).
@@ -142,5 +143,17 @@ Here are some of the most commonly used MPI functions along with explanations fo
       - `recvbuf`: Pointer to the receive buffer (root process).
       - `recvcount`: Number of elements to receive in the receive buffer (root process).
       - `recvtype`: Data type of elements in the receive buffer (root process).
+      - `root`: Rank of the root process.
+      - `comm`: Communicator (group of processes).
+
+11. **MPI_Reduce**
+
+    - Function: Performs a reduction operation on data distributed across processes.
+    - Parameters:
+      - `sendbuf`: Pointer to the send buffer.
+      - `recvbuf`: Pointer to the receive buffer.
+      - `count`: Number of elements in the send buffer.
+      - `datatype`: Data type of elements in the send buffer.
+      - `op`: Reduction operation to be performed.
       - `root`: Rank of the root process.
       - `comm`: Communicator (group of processes).
