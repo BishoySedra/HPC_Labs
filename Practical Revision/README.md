@@ -1,4 +1,4 @@
-# Q1: Adding specific value (b) to matrix (A) values
+# Q1: Adding specific value (b) to the matrix (A) values
 
 ![Q1](https://raw.githubusercontent.com/BishoySedra/HPC_Labs/main/Practical%20Revision/Q1/Q1.jpeg)
 
@@ -19,7 +19,7 @@ using namespace std;
 
 int main()
 {
-    // intialize MPI
+    // initialize MPI
     MPI_Init(NULL, NULL);
 
     // number of available processes
@@ -32,7 +32,7 @@ int main()
 
     // cout << processes << " processes are available." << endl;
 
-    // define array and integer variable
+    //Define an array and integer variable
     int b, N;
 
     if (rank == 0)
@@ -45,7 +45,7 @@ int main()
         cin >> b;
     }
 
-    // scatter the array to all processes
+    //Scatter the array to all processes
     MPI_Bcast(&N, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&b, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -59,13 +59,13 @@ int main()
         }
     }
 
-    // calculate the size of the array for each process
+    //Calculate the size of the array for each process
     int chunk_size = N / processes;
 
-    // define local array for each process
+    //Define the local array for each process
     int *local_A = new int[chunk_size];
 
-    // scatter the array to all processes
+    //Scatter the array to all processes
     MPI_Scatter(A, chunk_size, MPI_INT, local_A, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
     // adding the value of b to the local array of each process
@@ -83,7 +83,7 @@ int main()
     if (rank == 0)
     {
 
-        // handling the remainders
+        // handling the remainder
         int remainder = N - (N % processes);
 
         for (int i = remainder; i < N; i++)
@@ -126,7 +126,7 @@ const int Array_size = 150;
 
 int main()
 {
-    // intialize MPI
+    // initialize MPI
     MPI_Init(NULL, NULL);
 
     // number of available processes
@@ -148,13 +148,13 @@ int main()
         }
     }
 
-    // scatter the array to all processes
+    //Scatter the array to all processes
     int chunk_size = Array_size / processes;
     int *local_a = new int[chunk_size];
 
     MPI_Scatter(&a, chunk_size, MPI_INT, local_a, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // count the numbers divisible by 7
+    //Count the numbers divisible by 7
     int count = 0;
     for (int i = 0; i < chunk_size; i++)
     {
@@ -164,14 +164,14 @@ int main()
         }
     }
 
-    // reduce the count to the root process
+    //Reduce the count to the root process
     int total_count;
     MPI_Reduce(&count, &total_count, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (rank == 0)
     {
 
-        // handle the remaining elements
+        //Handle the remaining elements
         int remaining = Array_size - (Array_size % processes);
         for (int i = remaining; i < Array_size; i++)
         {
@@ -214,7 +214,7 @@ const int Array_size = 150;
 
 int main()
 {
-	// intialize MPI
+	// initialize MPI
 	MPI_Init(NULL, NULL);
 
 	// number of available processes
@@ -238,12 +238,12 @@ int main()
 			array[i] = i;
 		}
 
-		// get target number from user
+		//Get the target number from the user
 		cout << "Enter the target number: ";
 		cin >> target;
 	}
 
-	// broadcast target number to all processes
+	//Broadcast target number to all processes
 	MPI_Bcast(&target, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
 	// scatter array to all processes
@@ -252,7 +252,7 @@ int main()
 
 	MPI_Scatter(&array, chunk_size, MPI_INT, local_array, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// search for target number in local array
+	// Search for the target number in a local array
 	int found = -1;
 	for (int i = 0; i < chunk_size; i++)
 	{
@@ -263,7 +263,7 @@ int main()
 		}
 	}
 
-	// return found variable to root process
+	// return found variable to the root process
 	int final_found;
 	MPI_Reduce(&found, &final_found, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 
@@ -282,6 +282,198 @@ int main()
 		}
 
 		cout << "The process that found the target number is: " << final_found << "\n";
+	}
+
+	// finalize MPI
+	MPI_Finalize();
+}
+```
+
+# Q4: Modifying array elements then summation of all elements in parallel
+
+![Q4](https://raw.githubusercontent.com/BishoySedra/HPC_Labs/main/Practical%20Revision/Q4/Q4.jpeg)
+
+## Solution
+
+```cpp
+// Question 4: Write a parallel program using MPI to perform the following operation on an array of size 1000.
+//  If the number is even, increase it by 2, and if it is odd, decrease it by 1.
+//  Calculate the sum of the array elements after the operation.
+//  The result should be displayed by the master process.
+//  The result summation should be equal to 501000
+
+#include <iostream>
+#include <mpi.h>
+
+using namespace std;
+
+const int Array_size = 1000;
+const int value_to_increase = 2;
+const int value_to_decrease = 1;
+
+int main()
+{
+	// initialize MPI
+	MPI_Init(NULL, NULL);
+
+	// number of available processes
+	int processes;
+	MPI_Comm_size(MPI_COMM_WORLD, &processes);
+
+	// rank of process
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+	//Declare the array of size 1000
+	int arr[Array_size];
+
+	// initialize the array via master rank
+	if (rank == 0)
+	{
+		for (int i = 0; i < Array_size; i++)
+		{
+			arr[i] = i + 1;
+		}
+	}
+
+	// scatter the original array called "arr" to all processes
+	int chunk_size = Array_size / processes;
+	int *local_arr = new int[chunk_size];
+	MPI_Scatter(&arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
+
+	int *results = new int[processes];
+
+	// Doing the operation for each process
+	int sum = 0;
+	for (int i = 0; i < chunk_size; i++)
+	{
+		//Check if the number is even then increase by 2 and if odd decrease by 1
+		if ((local_arr[i] % 2) == 0)
+		{
+			local_arr[i] += value_to_increase;
+		}
+		else
+		{
+			local_arr[i] -= value_to_decrease;
+		}
+
+		sum += local_arr[i];
+	}
+
+	// gather the results
+	MPI_Gather(&sum, 1, MPI_INT, results, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	if (rank == 0)
+	{
+
+		int final_sum = 0;
+		for (int i = 0; i < processes; i++)
+		{
+			final_sum += results[i];
+		}
+
+		// handling reminder of the array
+		int rem = Array_size - (Array_size % processes);
+		for (int i = rem; i < Array_size; i++)
+		{
+			//Check if the number is even then increase by 2 and if odd decrease by 1
+			if ((arr[i] % 2) == 0)
+			{
+				arr[i] += value_to_increase;
+			}
+			else
+			{
+				arr[i] -= value_to_decrease;
+			}
+
+			final_sum += arr[i];
+		}
+
+		cout << "Result = " << final_sum << "\n";
+	}
+
+	// finalize MPI
+	MPI_Finalize();
+}
+```
+
+# Q5: Solving Σ (x^2 * y) for x = 1 to 50 and y = 1 to 50
+
+![Q5](https://raw.githubusercontent.com/BishoySedra/HPC_Labs/main/Practical%20Revision/Q5/Q5.jpeg)
+
+## Solution
+
+```cpp
+// Question 5: Write a parallel program using MPI to calculate the following expression:
+// Σ (x^2 * y) for x = 1 to 50 and y = 1 to 50
+// Each process should calculate a part of the sum and then the master process should collect all the partial sums and calculate the final sum.
+// The program should be able to run with any number of processes.
+// but required to be run with 5 processes.
+//The result should be equal to 1625625
+
+#include <iostream>
+#include <mpi.h>
+
+using namespace std;
+
+const int Array_size = 50;
+
+int main()
+{
+
+	// initialize MPI
+	MPI_Init(NULL, NULL);
+
+	// number of available processes
+	int processes;
+	MPI_Comm_size(MPI_COMM_WORLD, &processes);
+
+	// rank of process
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+	//Create two arrays of size 50
+	int arr1[Array_size], arr2[Array_size];
+
+	// initialize two arrays via master rank
+	if (rank == 0) {
+		for (int i = 0; i < Array_size; i++) {
+			arr1[i] = i + 1;
+			arr2[i] = i + 1;
+		}
+	}
+
+	// scatter the original arrays to all processes
+	int chunk_size = Array_size / processes;
+	int* local_arr1 = new int[chunk_size];
+	int* local_arr2 = new int[chunk_size];
+
+	MPI_Scatter(&arr1, chunk_size, MPI_INT, local_arr1, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
+	MPI_Scatter(&arr2, chunk_size, MPI_INT, local_arr2, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
+
+	// doing the same operation for each process
+	int partial_sum = 0;
+	for (int i = 0; i < chunk_size; i++) {
+		int term1 = (local_arr1[i] * local_arr1[i]);
+		int term2 = local_arr2[i];
+		partial_sum += (term1 * term2);
+	}
+
+	// reduce all these partial_sums to one final sum
+	int final_sum;
+	MPI_Reduce(&partial_sum, &final_sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+	if (rank == 0) {
+		// handling the remainder of the original arrays
+		int rem = Array_size - (Array_size % processes);
+
+		for (int i = rem; i < Array_size; i++) {
+			int term1 = (arr1[i] * arr1[i]);
+			int term2 = arr2[i];
+			final_sum += (term1 * term2);
+		}
+
+		cout << "Result = " << final_sum << "\n";
 	}
 
 	// finalize MPI
