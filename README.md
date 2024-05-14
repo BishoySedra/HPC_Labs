@@ -15,7 +15,7 @@ Follow these steps to set up the environment for working with MPI in your projec
 
 3. **Configure Linker Properties**:
 
-   - Still in project properties, go to the Linker section.
+   - Still, in project properties, go to the Linker section.
    - Under "Additional Library Directories," add the path: `C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64` or `C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x86` based on your system architecture.
 
 4. **Configure Linker Input**:
@@ -157,3 +157,14 @@ Here are some of the most commonly used MPI functions along with explanations fo
       - `op`: Reduction operation to be performed.
       - `root`: Rank of the root process.
       - `comm`: Communicator (group of processes).
+
+12. **MPI_Bcast**
+
+    - Function: Broadcasts a message from the root process to all other processes in a communicator.
+    - Parameters:
+      - `buffer`: Pointer to the buffer containing the data to be broadcast.
+      - `count`: Number of elements in the buffer.
+      - `datatype`: Data type of elements in the buffer.
+      - `root`: Rank of the root process.
+      - `comm`: Communicator (group of processes).
+
