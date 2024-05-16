@@ -529,7 +529,7 @@ int main()
 	int* local_arr = new int[chunk_size];
 	MPI_Scatter(arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// find the max number in the local array
+	//Find the max number in the local array
 	int max_number = INT_MIN;
 	for (int i = 0; i < chunk_size; i++) {
 		if (local_arr[i] > max_number) {
@@ -537,16 +537,16 @@ int main()
 		}
 	}
 
-	// gather the max numbers from all processes
+	//Gather the max numbers from all processes
 	int* results = new int[processes];
 	MPI_Gather(&max_number, 1, MPI_INT, results, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// find the final max number
+	//Find the final max number
 	if (rank == 0) {
 
 		int final_max = INT_MIN;
 
-		// check the remaining numbers
+		//Check the remaining numbers
 		int rem = SIZE - (SIZE % processes);
 		for (int i = rem; i < SIZE; i++) {
 			if (arr[i] > final_max) {
@@ -554,7 +554,7 @@ int main()
 			}
 		}
 
-		// check the gathered numbers
+		//Check the gathered numbers
 		for (int i = 0; i < processes; i++) {
 			if (results[i] > final_max) {
 				final_max = results[i];
@@ -577,10 +577,10 @@ int main()
 ## Solution
 
 ```cpp
-// Question 7: -Implement program using mpi to count the even numbers in array with 100 elements
+// Question 7: -Implement a program using mpi to count the even numbers in an array with 100 elements
 // and print the count of even numbers in each process.
-// you should can run the program with any number of processes.
-// the result should be equal to 50.
+//You should run the program with any number of processes.
+//The result should be equal to 50.
 
 #include <iostream>
 #include <mpi.h>
@@ -605,7 +605,7 @@ int main()
 	// array of 100 elements
 	int arr[SIZE];
 
-	// fill the array with random numbers
+	//Fill the array with random numbers
 	for (int i = 0; i < SIZE; i++)
 	{
 		arr[i] = (i + 1);
@@ -616,7 +616,7 @@ int main()
 	int* local_arr = new int[chunk_size];
 	MPI_Scatter(&arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// count the even numbers in the local array
+	//Count the even numbers in the local array
 	int cnt = 0;
 	for (int i = 0; i < chunk_size; i++)
 	{
@@ -657,10 +657,10 @@ int main()
 ## Solution
 
 ```cpp
-// Question 8: -Implement program using mpi to calculate the product of array elements of size 10.
+// Question 8: -Implement a program using mpi to calculate the product of array elements of size 10.
 // then the calculate the result up to power 1 / 10.
 // The formula is: result = (Π(arr[i]))^(1/10) where i = 1 to 10.
-// the output should be equal to 4.52873
+//The output should be equal to 4.52873
 
 #include <iostream>
 #include <cmath>
@@ -699,14 +699,14 @@ int main()
 	int* local_arr = new int[chunk_size];
 	MPI_Scatter(&arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
 
-	// calculate product of local array
+	// calculate the product of local array
 	int product = 1;
 	for (int i = 0; i < chunk_size; i++)
 	{
 		product *= local_arr[i];
 	}
 
-	// calculate global product
+	//Calculate the global product
 	int global_product;
 
 	MPI_Reduce(&product, &global_product, 1, MPI_INT, MPI_PROD, 0, MPI_COMM_WORLD);
@@ -723,6 +723,110 @@ int main()
 		double result = pow(global_product, 1.0 / SIZE);
 		cout << "Result: " << result << "\n";
 	}
+
+
+	// finalize MPI
+	MPI_Finalize();
+
+	return 0;
+}
+```
+
+# Q9: Count prime numbers in an array of size 100
+
+![Q9](https://raw.githubusercontent.com/BishoySedra/HPC_Labs/main/Practical%20Revision/Q9/Q9.png)
+
+## Solution
+
+```cpp
+// Question 9:
+// Write a program using MPI to count the number of prime numbers in an array of size 100.
+// the output should be equal to 25.
+
+#include <iostream>
+#include <cmath>
+#include <mpi.h>
+
+using namespace std;
+
+const int SIZE = 100;
+
+bool is_prime(int n)
+{
+	if (n <= 1)
+	{
+		return false;
+	}
+
+	for (int i = 2; i * i <= n; i++)
+	{
+		if (n % i == 0)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int main()
+{
+	// initialize MPI
+	MPI_Init(NULL, NULL);
+
+	// number of available processes
+	int processes;
+	MPI_Comm_size(MPI_COMM_WORLD, &processes);
+
+	// rank of process
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+	int arr[SIZE];
+
+	// initialize array
+	if (rank == 0)
+	{
+		for (int i = 0; i < SIZE; i++)
+		{
+			arr[i] = i + 1;
+		}
+	}
+
+	// scatter array
+	int chunk_size = SIZE / processes;
+	int* local_arr = new int[chunk_size];
+	MPI_Scatter(arr, chunk_size, MPI_INT, local_arr, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
+
+	// count prime numbers
+	int count = 0;
+	for (int i = 0; i < chunk_size; i++)
+	{
+		if (is_prime(local_arr[i]))
+		{
+			count++;
+		}
+	}
+
+	// reduce count
+	int total_count;
+	MPI_Reduce(&count, &total_count, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+	if (rank == 0)
+	{
+		// handline the remaining elements
+		int rem = SIZE - (SIZE % processes);
+		for (int i = rem; i < SIZE; i++)
+		{
+			if (is_prime(arr[i]))
+			{
+				total_count++;
+			}
+		}
+
+		cout << "Total prime numbers: " << total_count << "\n";
+	}
+
 
 
 	// finalize MPI
