@@ -2,6 +2,15 @@
 
 This repository contains materials for the High-Performance Computing (HPC) course, focusing on hands-on labs and talks about Parallel Programming using the MPI (Message Passing Interface) package.
 
+## YouTube Playlist
+
+For a visual explanation of the labs and coding examples, check out the following YouTube playlist:
+
+[High-Performance Computing Labs - Parallel Programming with MPI](https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID)
+
+Feel free to explore the videos for detailed discussions and code walkthroughs!
+
+
 ## Setting up the Environment
 
 Follow these steps to set up the environment for working with MPI in your project:
