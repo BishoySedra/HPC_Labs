@@ -6,7 +6,7 @@ This repository contains materials for the High-Performance Computing (HPC) cour
 
 For a visual explanation of the labs and coding examples, check out the following YouTube playlist:
 
-[High-Performance Computing Labs - Parallel Programming with MPI](https://www.youtube.com/playlist?list=YOUR_PLAYLIST_ID)
+[High-Performance Computing Labs - Parallel Programming with MPI](https://www.youtube.com/playlist?list=PLL4_yMhJDtyxW634Q7z5WI81iSumNINNe&si=ECFTN7lL97lGto89)
 
 Feel free to explore the videos for detailed discussions and code walkthroughs!
 
