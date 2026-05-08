@@ -177,3 +177,39 @@ Here are some of the most commonly used MPI functions along with explanations fo
       - `root`: Rank of the root process.
       - `comm`: Communicator (group of processes).
 
+13. **MPI_Scatterv**
+
+    - Function: Distributes varying amounts of data from the root process to all processes in a communicator.
+    - Parameters:
+      - `sendbuf`: Pointer to the send buffer (root process; ignored for other processes).
+      - `sendcounts`: Integer array specifying the number of elements to send to each process.
+      - `displs`: Integer array specifying the starting indices (displacements) in `sendbuf` for data sent to each process.
+      - `sendtype`: Data type of elements in the send buffer.
+      - `recvbuf`: Pointer to the receive buffer (all processes).
+      - `recvcount`: Number of elements expected in the receive buffer.
+      - `recvtype`: Data type of elements in the receive buffer.
+      - `root`: Rank of the root process.
+      - `comm`: Communicator (group of processes).
+
+14. **MPI_Allgather**
+
+    - Function: Gathers data from all processes and distributes the combined data to all processes.
+    - Parameters:
+      - `sendbuf`: Pointer to the send buffer (each process).
+      - `sendcount`: Number of elements in the send buffer.
+      - `sendtype`: Data type of elements in the send buffer.
+      - `recvbuf`: Pointer to the receive buffer to store the gathered data (each process).
+      - `recvcount`: Number of elements received from each process.
+      - `recvtype`: Data type of elements in the receive buffer.
+      - `comm`: Communicator (group of processes).
+
+15. **MPI_Allreduce**
+
+    - Function: Combines values from all processes and distributes the result back to all processes using a reduction operation (like sum, max, etc.).
+    - Parameters:
+      - `sendbuf`: Pointer to the send buffer with the data to reduce.
+      - `recvbuf`: Pointer to the receive buffer to store the result (all processes).
+      - `count`: Number of elements in send and receive buffers.
+      - `datatype`: Data type of elements.
+      - `op`: Reduction operation (e.g., `MPI_SUM`, `MPI_MAX`).
+      - `comm`: Communicator (group of processes).
