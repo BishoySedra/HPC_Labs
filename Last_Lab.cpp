@@ -48,9 +48,9 @@ int main() {
    cout << "Rank " << rank << ": " << total_res << endl;
 
    if (rank == 0) {
-      delete[] arr;
-      delete[] partial_arr;
-      // delete[] gatherArr;
+    delete[] arr;
    }
+   delete[] partial_arr;
+   // delete[] gather_arr
    MPI_Finalize();
 }
